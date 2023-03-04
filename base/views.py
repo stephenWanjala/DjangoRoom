@@ -56,7 +56,7 @@ def room(request, pk):
     return render(request, template_name="base/room.html", context={'room': context_room})
 
 
-@login_required(login_url='/login')
+@login_required(login_url='login')
 def create_room(request):
     form = RoomForm()
     if request.method == 'POST':
@@ -69,6 +69,7 @@ def create_room(request):
     return render(request, 'base/room_form.html', context)
 
 
+@login_required(login_url='login')
 def update_room(request, pk):
     room_to_update = Room.objects.get(id=pk)
     form = RoomForm(instance=room_to_update)
@@ -82,6 +83,7 @@ def update_room(request, pk):
     return render(request, 'base/room_form.html', context=context)
 
 
+@login_required(login_url='login')
 def delete_room(request, pk):
     room_to_delete = Room.objects.get(id=pk)
     if request.method == 'POST':
