@@ -1,3 +1,6 @@
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render, redirect
 
@@ -12,6 +15,28 @@ from .models import Room, Topic
 #
 # ]
 
+def login_page(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, "User does not exit")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "Username or password doesn't exist")
+    context = {}
+    return render(request, 'base/login_register.html', context=context)
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('home')
+
 
 # Create your views here.
 def home(request):
@@ -21,7 +46,7 @@ def home(request):
         | Q(description__icontains=q))
     topics = Topic.objects.all()
     room_count = rooms.count()
-    context = {'rooms': rooms, 'topics': topics,'room_count':room_count}
+    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count}
     return render(request, template_name="base/home.html", context=context)
 
 
