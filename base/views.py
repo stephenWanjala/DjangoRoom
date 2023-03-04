@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from .forms import RoomForm
@@ -73,6 +74,8 @@ def create_room(request):
 def update_room(request, pk):
     room_to_update = Room.objects.get(id=pk)
     form = RoomForm(instance=room_to_update)
+    if request.user != room_to_update.host:
+        return HttpResponse("Not Allowed here")
     if request.method == 'POST':
         print(request.POST)
         form = RoomForm(request.POST, instance=room_to_update)
@@ -86,6 +89,8 @@ def update_room(request, pk):
 @login_required(login_url='login')
 def delete_room(request, pk):
     room_to_delete = Room.objects.get(id=pk)
+    if request.user != room_to_delete.host:
+        return HttpResponse("Only the creator of the room can delete room")
     if request.method == 'POST':
         room_to_delete.delete()
         return redirect('home')
