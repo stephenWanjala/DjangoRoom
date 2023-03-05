@@ -1,8 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Study Buddy</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'style/main.css' %}">
 </head>
 <body>
 {% include 'navbar.html' %}
@@ -10,7 +12,7 @@
 {% if messages %}
     <ul class="messages">
         {% for message in messages %}
-         <li>{{ message }}</li>
+            <li>{{ message }}</li>
         {% endfor %}
 
     </ul>
