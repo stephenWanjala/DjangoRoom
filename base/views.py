@@ -75,11 +75,13 @@ def home(request):
 
 def room(request, pk):
     context_room = Room.objects.get(id=pk)
+    participants = context_room.participants.all()
     if request.method == 'POST':
         message = Message.objects.create(user=request.user, room=context_room, body=request.POST.get('body'))
+        context_room.participants.add(request.user)
         return redirect('room', pk=context_room.id)
     room_messages = context_room.message_set.all().order_by('-created')
-    context = {'room': context_room, 'room_messages': room_messages}
+    context = {'room': context_room, 'room_messages': room_messages, 'participants': participants}
     return render(request, template_name="base/room.html", context=context)
 
 
