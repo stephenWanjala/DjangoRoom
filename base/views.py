@@ -123,3 +123,14 @@ def delete_room(request, pk):
         room_to_delete.delete()
         return redirect('home')
     return render(request, 'base/delete.html', context={'obj': room})
+
+
+@login_required(login_url='login')
+def delete_message(request, pk):
+    message_to_delete = Message.objects.get(id=pk)
+    if request.user != message_to_delete.user:
+        return HttpResponse("Only the creator of the message can delete message")
+    if request.method == 'POST':
+        message_to_delete.delete()
+        return redirect('home')
+    return render(request, 'base/delete.html', context={'obj': message_to_delete})
